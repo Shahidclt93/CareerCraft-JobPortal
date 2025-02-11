@@ -26,7 +26,6 @@ const Login = () => {
   const ChangeFilehandler = (e) => {
     setInput({ ...input, file: e.target.files?.[0] });
   };
-  console.log(user)
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -36,7 +35,9 @@ const Login = () => {
       const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
+        
       });
+      console.log(res)
       if (res.data.success) {
         dispatch(setUser(res.data.user));
         navigate("/");
