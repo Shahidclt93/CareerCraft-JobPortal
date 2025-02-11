@@ -31,8 +31,9 @@ const JobDetails = () => {
 
   const applyJobHandler = async () => {
     try {
-      const res = await axios.get(
+      const res = await axios.post(
         `${APPLICATION_API_ENDPOINT}/apply/${jobId}`,
+        {},
         { withCredentials: true }
       );
       if (res.data.success) {
