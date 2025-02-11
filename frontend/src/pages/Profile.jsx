@@ -8,7 +8,7 @@ import AppliedJob from "../components/userComponents/AppliedJob";
 import EditProfileModal from "../components/userComponents/EditProfileModal";
 import { useSelector } from "react-redux";
 import useGetAppliedJobs from "../hooks/useGetAllAppliedJobs";
-import defaultProfileImage from "../assets/Profile.PNG";
+import defaultProfileImage from "../assets/Profile.png";
 
 const isResume = true;
 const Profile = () => {
