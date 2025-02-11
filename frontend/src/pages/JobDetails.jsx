@@ -15,8 +15,6 @@ const JobDetails = () => {
   const params = useParams();
   const jobId = params.id;
   const navigate = useNavigate();
-  
-
   const { singleJob } = useSelector((store) => store.job);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -30,6 +28,10 @@ const JobDetails = () => {
   const [isApplied, setIsApplied] = useState(isIntiallyApplied);
 
   const applyJobHandler = async () => {
+    if(!user){
+      toast.error("You need to sign in to apply for jobs.")
+      return;
+    }
     try {
       const res = await axios.post(
         `${APPLICATION_API_ENDPOINT}/apply/${jobId}`,
