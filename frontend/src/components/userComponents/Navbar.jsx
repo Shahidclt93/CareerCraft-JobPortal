@@ -11,7 +11,7 @@ import { setUser } from "../../redux/authSlice";
 import { USER_API_ENDPOINT } from "../../utils/data";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoIosClose } from "react-icons/io";
-import defaultProfileImage from "../../assets/Profile.PNG"
+import defaultProfileImage from "../../assets/Profile.png"
 
 const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
