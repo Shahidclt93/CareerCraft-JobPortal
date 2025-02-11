@@ -17,7 +17,7 @@ const useGetAllAdminJobs = () => {
         const res = await axios.get(`${JOB_API_ENDPOINT}/getadminjobs`, {
           withCredentials: true,
         });
-        if (res.data.status) {
+        if (res.data.success) {
           dispatch(setAllAdminJobs(res.data.jobs));
         } else {
           setError("Failed to fetch jobs.");

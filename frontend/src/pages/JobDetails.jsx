@@ -59,7 +59,7 @@ const JobDetails = () => {
         const res = await axios.get(`${JOB_API_ENDPOINT}/get/${jobId}`, {
           withCredentials: true,
         });
-        if (res.data.status) {
+        if (res.data.success) {
           dispatch(setSingleJob(res.data.job));
           setIsApplied(
             res.data.job.applications.some(
