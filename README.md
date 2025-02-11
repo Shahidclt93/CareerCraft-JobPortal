@@ -1,4 +1,4 @@
-# Job Portal
+# Career Caraft - Job Portal
 
 This project is a fully functional job portal website that manages job postings, receives applications, and creates a hiring workflow for these applications. It is built using the MERN stack: MongoDB, Express, React, and Node.js.
 ## Features
@@ -7,13 +7,13 @@ This project is a fully functional job portal website that manages job postings,
 - Job posting creation and management
 - Application submission and tracking
 - Multiple form checks for candidates
-- Coordinator and ./screenshots
+- Coordinator and recruiter dashboards for managing job postings and application
 ## Screenshots
 
-![App Screenshot](./screenshots/HomePage.png)
-![App Screenshot](./screenshots/AllJobs.png)
-![App Screenshot](./screenshots/ProfilePage.png)
-![App Screenshot](./screenshots/AdminDashboard.png)
+![App Screenshot](./screenshots/HomePage.PNG)
+![App Screenshot](./screenshots/AllJobs.PNG)
+![App Screenshot](./screenshots/ProfilePage.PNG)
+![App Screenshot](./screenshots/AdminDashboard.PNG)
 
 
 ## Installation
@@ -21,7 +21,7 @@ This project is a fully functional job portal website that manages job postings,
 Clone the repository:
 ```
 git clone https://github.com/Shahidclt93/CareerCraft-JobPortal.git
-cd application-tracking-system
+cd CareerCraft-JobPortal
 ```
 Install server dependencies:
 ```
