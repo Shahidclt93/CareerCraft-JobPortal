@@ -47,11 +47,11 @@ export const postJob = async (req, res) => {
     res.status(201).json({
       message: "Job posted successfully.",
       job,
-      status: true,
+      success: true,
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Server Error", status: false });
+    return res.status(500).json({ message: "Server Error", success: false });
   }
 };
 
@@ -72,12 +72,12 @@ export const getAllJobs = async (req, res) => {
       .sort({ createdAt: -1 });
 
     if (!jobs) {
-      return res.status(404).json({ message: "No jobs found", status: false });
+      return res.status(404).json({ message: "No jobs found", success: false });
     }
-    return res.status(200).json({ jobs, status: true });
+    return res.status(200).json({ jobs, success: true });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Server Error", status: false });
+    return res.status(500).json({ message: "Server Error", success: false });
   }
 };
 
@@ -89,12 +89,12 @@ export const getJobById = async (req, res) => {
       path: "applications",
     });
     if (!job) {
-      return res.status(404).json({ message: "Job not found", status: false });
+      return res.status(404).json({ message: "Job not found", success: false });
     }
-    return res.status(200).json({ job, status: true });
+    return res.status(200).json({ job, success: true });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Server Error", status: false });
+    return res.status(500).json({ message: "Server Error", success: false });
   }
 };
 
@@ -107,12 +107,12 @@ export const getAdminJobs = async (req, res) => {
       sort: { createdAt: -1 },
     });
     if (!jobs) {
-      return res.status(404).json({ message: "No jobs found", status: false });
+      return res.status(404).json({ message: "No jobs found", success: false });
     }
-    return res.status(200).json({ jobs, status: true });
+    return res.status(200).json({ jobs, success: true });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Server Error", status: false });
+    return res.status(500).json({ message: "Server Error", success: false });
   }
 };
 
@@ -151,10 +151,10 @@ export const searchJobs = async (req, res) => {
       .populate("company")
       .sort({ createdAt: -1 });
 
-    return res.status(200).json({ jobs, status: true });
+    return res.status(200).json({ jobs, success: true });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Server Error", status: false });
+    return res.status(500).json({ message: "Server Error", success: false });
   }
 };
 
@@ -166,21 +166,21 @@ export const deleteJob = async (req, res) => {
 
     const job = await Job.findById(jobId);
     if (!job) {
-      return res.status(404).json({ message: "Job not found", status: false });
+      return res.status(404).json({ message: "Job not found", success: false });
     }
 
     // Check if the user is the creator of the job
     if (job.created_by.toString() !== userId) {
-      return res.status(403).json({ message: "Unauthorized", status: false });
+      return res.status(403).json({ message: "Unauthorized", success: false });
     }
 
     await Job.findByIdAndDelete(jobId);
 
     return res
       .status(200)
-      .json({ message: "Job deleted successfully", status: true });
+      .json({ message: "Job deleted successfully", success: true });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Server Error", status: false });
+    return res.status(500).json({ message: "Server Error", success: false });
   }
 };
