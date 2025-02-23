@@ -7,7 +7,9 @@ import userRoute from "./routes/userRoute.js";
 import companyRoute from "./routes/companyRoute.js";
 import jobRoute from "./routes/jobRoute.js";
 import applicationRoute from "./routes/applicationRoute.js";
+import  { job }  from "./job.js"
 
+job.start()
 dotenv.config({});
 const app = express();
 

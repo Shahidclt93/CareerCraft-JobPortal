@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { useDispatch } from "react-redux";
-import { setSearchedQuery } from "../../redux/jobSlice";
 import { IoIosClose } from "react-icons/io";
 
 
@@ -41,69 +39,99 @@ const filterData = [
   },
   {
     filterType: "Salary",
-    array: ["0-50k", "50k-100k", "100k-200k", "200k+"],
+    array: ["0-500k", "500k-1000k", "1000k-5000k", "2000k+"],
   },
 ];
 
 const FilterMenu = ({setOpenFilterMenu,onFilterChange}) => {
-  const [selectedValue, setSelectedValue] = useState("");
-
-
-  const handleChange = (value) => {
-    setSelectedValue(value);
-    const filters = parseFilterValue(value);
-    onFilterChange(filters);
-  };
-
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(setSearchedQuery(selectedValue.toLowerCase()));
-  }, [selectedValue]);
-
-
-  const parseFilterValue = (value) => {
-    const filters = {
+  const [selectedValue, setSelectedValue] = useState({
+    
+  
+      location: "",
+      technology: "",
       minSalary: "",
       maxSalary: "",
       minExperience: "",
-      maxExperience: "",
-    };
-    if (value.includes("k")) {
-      const [min, max] = value.split("-");
-      filters.minSalary = min.replace("k", "000");
-      filters.maxSalary = max ? max.replace("k", "000") : "";
-    } else if (value.includes("years")) {
-      const [min, max] = value.split("-");
-      filters.minExperience = min;
-      filters.maxExperience = max ? max.replace(" years", "") : "";
-    }
-    return filters;
+      maxExperience: ""
+    
+  });
+
+
+
+  useEffect(() => {
+    onFilterChange(selectedValue);
+  }, [selectedValue]);
+
+
+ 
+  const handleChange = (value, filterType) => {
+    setSelectedValue((prev)=> {
+      const updatedValue = {...prev}
+      switch(filterType){
+        case "Location":
+          updatedValue.location = value
+          break;
+
+          case "Technology":
+          updatedValue.technology = value
+          break;
+
+           case "Salary": {
+          const [minSal, maxSal] = value.split("-");
+          updatedValue.minSalary = minSal.replace("k", "000");
+          updatedValue.maxSalary = maxSal ? maxSal.replace("k", "000") : "";
+          updatedValue.minSalary = minSal ? minSal.replace("k+", "000") : "" ;
+          break;
+        } 
+
+        case "Experience": {
+          const [minEx, maxEx] = value.split("-");
+          updatedValue.minExperience = minEx;
+          updatedValue.maxExperience = maxEx ? maxEx.replace(" years", "") : "";
+          break;
+        }
+        default:
+          break;
+
+      }
+
+      return updatedValue
+
+    
+    });
   };
+
 
   return (
     <div className="w-full bg-white rounded-md border p-3">
       <div className="flex justify-between">
-      <h1 className="font-bold text-lg">Filter Jobs</h1>
-      <IoIosClose className="md:hidden" size={26} onClick={()=> setOpenFilterMenu(false)}/>
+        <h1 className="font-bold text-lg">Filter Jobs</h1>
+        <IoIosClose
+          className="md:hidden"
+          size={26}
+          onClick={() => setOpenFilterMenu(false)}
+        />
       </div>
       <hr className="mt-3" />
-      <RadioGroup value={selectedValue} onValueChange={handleChange}>
-        {filterData.map((data, index) => (
-          <div key={index}>
-            <h2 className="font-bold text-lg">{data.filterType}</h2>
-
+      {filterData.map((data, index) => (
+        <div key={index}>
+          <h2 className="font-bold text-lg">{data.filterType}</h2>
+          <RadioGroup
+            value={selectedValue[data.filterType.toLowerCase()]}
+            onValueChange={(value) => handleChange(value, data.filterType)}
+          >
             {data.array.map((item, indx) => {
               const itemId = `Id${index}-${indx}`;
               return (
                 <div key={itemId} className="flex items-center space-x-2 my-2">
-                  <RadioGroupItem value={item} id={itemId}></RadioGroupItem>
+                  <RadioGroupItem value={item} id={itemId} />
                   <label htmlFor={itemId}>{item}</label>
                 </div>
               );
             })}
-          </div>
-        ))}
-      </RadioGroup>
+          </RadioGroup>
+        </div>
+      ))}
     </div>
   );
 };

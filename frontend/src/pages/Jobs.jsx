@@ -18,45 +18,29 @@ const Jobs = () => {
   const [filterJobs, setFilterJobs] = useState([]);
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [query, setQuery] = useState("");
-  const [filters, setFilters] = useState({
-    minSalary: "",
-    maxSalary: "",
-    minExperience: "",
-    maxExperience: "",
-  });
+  const [filters, setFilters] = useState(null);
+
+
   useEffect(() => {
-    if (!searchedQuery || searchedQuery.trim() === "") {
-      setFilterJobs(allJobs);
-      return;
-    }
 
     const fetchSearchedJobs = async () => {
       try {
         const res = await axios.get(
-          `${JOB_API_ENDPOINT}/search/${searchedQuery}`,
+          `${JOB_API_ENDPOINT}/get/`,
 
           {
-            params: {
-              ...(filters.minSalary && { minSalary: filters.minSalary }),
-              ...(filters.maxSalary && { maxSalary: filters.maxSalary }),
-              ...(filters.minExperience && {
-                minExperience: filters.minExperience,
-              }),
-              ...(filters.maxExperience && {
-                maxExperience: filters.maxExperience,
-              }),
-            },
+           params:{...filters, searchedKeyword:searchedQuery},
             withCredentials: true,
           }
         );
-        // console.log(res)
+        console.log(res)
         setFilterJobs(res.data.jobs);
       } catch (error) {
         console.error(error);
       }
     };
     fetchSearchedJobs();
-  }, [allJobs, searchedQuery]);
+  }, [allJobs, searchedQuery, filters]);
 
   const searchjobHandler = () => {
     dispatch(setSearchedQuery(query));
@@ -103,14 +87,14 @@ const Jobs = () => {
               />
             </div>
 
-            {filterJobs.length <= 0 ? (
+            {filterJobs?.length <= 0 ? (
               <div className="w-full flex justify-center mt-8">
                 <span className="text-gray-500">Job not found</span>
               </div>
             ) : (
               <div className="flex-1 mb-5">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {filterJobs.map((job) => (
+                  {filterJobs?.map((job) => (
                     <motion.div
                       initial={{ opacity: 0, x: 100 }}
                       animate={{ opacity: 1, x: 0 }}

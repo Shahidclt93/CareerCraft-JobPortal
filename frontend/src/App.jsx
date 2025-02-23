@@ -43,7 +43,7 @@ const appRouter = createBrowserRouter([
     element: <TermsofService />,
   },
   {
-    path: "/jobs/:keyword?",
+    path: "/jobs",
     element: <Jobs />,
   },
   {

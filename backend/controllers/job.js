@@ -1,3 +1,4 @@
+import { query } from "express";
 import { Job } from "../models/jobModel.js";
 
 // Post new job 
@@ -55,25 +56,52 @@ export const postJob = async (req, res) => {
   }
 };
 
-//Get All Jobs
+// Get All Jobs
 export const getAllJobs = async (req, res) => {
   try {
-    const keyword = req.query.keyword || "";
-    const query = {
-      $or: [
-        { title: { $regex: keyword, $options: "i" } },
-        { description: { $regex: keyword, $options: "i" } },
-      ],
-    };
-    const jobs = await Job.find(query)
-      .populate({
-        path: "company",
-      })
-      .sort({ createdAt: -1 });
+    const { location, technology, minSalary, maxSalary, minExperience, maxExperience, searchedKeyword} = req.query;
 
-    if (!jobs) {
-      return res.status(404).json({ message: "No jobs found", success: false });
+    // Build the filter object based on query parameters
+    const filter = {};
+
+    if (searchedKeyword) {
+      filter.$or = [
+        { title: { $regex: searchedKeyword, $options: "i" } }, 
+        { description: { $regex: searchedKeyword, $options: "i" } },
+        { location: { $regex: searchedKeyword, $options: "i" } }, 
+        { requirements: { $regex: searchedKeyword, $options: "i" } }, 
+        { jobType: { $regex: searchedKeyword, $options: "i" } }, 
+      ];
     }
+
+    if (location) {
+      filter.location = { $regex: location, $options: "i" }; 
+    }
+
+    if (technology) {
+      filter.$or = [
+        { title: { $regex: technology, $options: "i" } },
+        { description: { $regex: technology, $options: "i" } }
+      ];
+    }
+
+    if (minSalary && maxSalary) {
+      filter.salary = { $gte: parseInt(minSalary), $lte: parseInt(maxSalary) };
+    } else if (minSalary) {
+      filter.salary = { $gte: parseInt(minSalary) };
+    } else if (maxSalary) {
+      filter.salary = { $lte: parseInt(maxSalary) };
+    }
+
+    if (minExperience && maxExperience) {
+      filter.experienceLevel = { $gte: parseInt(minExperience), $lte: parseInt(maxExperience) };
+    } else if (minExperience) {
+      filter.experience = { $gte: parseInt(minExperience) };
+    } else if (maxExperience) {
+      filter.experience = { $lte: parseInt(maxExperience) };
+    }
+    // Fetch jobs from the database based on the filter
+    const jobs = await Job.find(filter);
     return res.status(200).json({ jobs, success: true });
   } catch (error) {
     console.error(error);
@@ -116,47 +144,6 @@ export const getAdminJobs = async (req, res) => {
   }
 };
 
-// Search job
-export const searchJobs = async (req, res) => {
-  try {
-    const keyword = req.params.keyword || "";
-    const { minSalary, maxSalary, minExperience, maxExperience } = req.query;
-    // Base query for keyword search
-    const query = {};
-    if (keyword) {
-      query.$or = [
-        { title: { $regex: keyword, $options: "i" } },
-        { description: { $regex: keyword, $options: "i" } },
-        { location: { $regex: keyword, $options: "i" } },
-      ];
-    }
-
-    // Add salary range filter if provided
-    if (minSalary !== undefined && maxSalary !== undefined) {
-      query.salary = {
-        $gte: parseInt(minSalary),
-        $lte: parseInt(maxSalary),
-      };
-    }
-
-    if (minExperience !== undefined && maxExperience !== undefined) {
-      query.experienceLevel = {
-        $gte: parseInt(minExperience),
-        $lte: parseInt(maxExperience),
-      };
-    }
-
-    // Fetch jobs based on the query
-    const jobs = await Job.find(query)
-      .populate("company")
-      .sort({ createdAt: -1 });
-
-    return res.status(200).json({ jobs, success: true });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Server Error", success: false });
-  }
-};
 
 // Delete Job
 export const deleteJob = async (req, res) => {

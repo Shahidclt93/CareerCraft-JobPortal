@@ -13,7 +13,7 @@ const Hero = () => {
 
   const searchjobHandler = () => {
     dispatch(setSearchedQuery(query));
-    navigate(`/jobs/${query}`);
+    navigate("/jobs");
   };
 
   return (
