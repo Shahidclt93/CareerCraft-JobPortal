@@ -10,6 +10,7 @@ import applicationRoute from "./routes/applicationRoute.js";
 import { job } from "./job.js";
 import session from "express-session";
 import passport from "./utils/passport.js";
+import MongoStore from "connect-mongo";
 
 job.start();
 dotenv.config({});
@@ -21,7 +22,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(
-  session({ secret: "yourSecretKey", resave: false, saveUninitialized: false })
+  session({
+    secret: "yourSecretKey",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      ttl: 14 * 24 * 60 * 60,
+    }),
+  })
 );
 app.use(passport.initialize());
 app.use(passport.session());
