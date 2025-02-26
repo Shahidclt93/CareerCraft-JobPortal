@@ -7,9 +7,11 @@ import userRoute from "./routes/userRoute.js";
 import companyRoute from "./routes/companyRoute.js";
 import jobRoute from "./routes/jobRoute.js";
 import applicationRoute from "./routes/applicationRoute.js";
-import  { job }  from "./job.js"
+import { job } from "./job.js";
+import session from "express-session";
+import passport from "./utils/passport.js";
 
-job.start()
+job.start();
 dotenv.config({});
 const app = express();
 
@@ -18,8 +20,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use(
+  session({ secret: "yourSecretKey", resave: false, saveUninitialized: false })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
 const corsOptions = {
-  origin: ["http://localhost:5173","https://careercraft-frontend.onrender.com"],
+  origin: [
+    "http://localhost:5173",
+    "https://careercraft-frontend.onrender.com",
+  ],
   credentials: true,
 };
 
@@ -27,9 +38,8 @@ app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 3000;
 
- 
 //routes
-app.use("/api/user", userRoute);
+app.use("/auth", userRoute);
 app.use("/api/company", companyRoute);
 app.use("/api/job", jobRoute);
 app.use("/api/application", applicationRoute);

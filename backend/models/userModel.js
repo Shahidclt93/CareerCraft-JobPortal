@@ -12,17 +12,30 @@ const userSchema = new mongoose.Schema(
     },
     phoneNumber: {
       type: String,
-      required: true,
+      required: function () {
+        return !this.googleId;
+      },
       unique: true,
+      sparse: true,
     },
     password: {
       type: String,
-      required: true,
+      required: function () {
+        return !this.googleId;
+      },
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
     },
     adharcard: {
       type: String,
-      required: true,
+      required: function () {
+        return !this.googleId;
+      },
       unique: true,
+      sparse: true,
     },
     role: {
       type: String,
@@ -36,10 +49,10 @@ const userSchema = new mongoose.Schema(
       },
       skills: [{ type: String }],
       resume: {
-        type: String, 
+        type: String,
       },
       resumeOriginalname: {
-        type: String, 
+        type: String,
       },
       company: {
         type: mongoose.Schema.Types.ObjectId,

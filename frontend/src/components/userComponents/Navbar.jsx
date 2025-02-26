@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Avatar, AvatarImage } from "../ui/avatar";
@@ -6,12 +6,12 @@ import { Button } from "../ui/button";
 import { LogOut, User2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import axios from "axios"; 
+import axios from "axios";
 import { setUser } from "../../redux/authSlice";
 import { USER_API_ENDPOINT } from "../../utils/data";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoIosClose } from "react-icons/io";
-import defaultProfileImage from "../../assets/Profile.png"
+import defaultProfileImage from "../../assets/Profile.png";
 
 const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
@@ -23,14 +23,37 @@ const Navbar = () => {
     setSidebarOpen(false);
   };
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/auth/me", {
+          withCredentials: true,
+        });
+        if (res.data.success) {
+          dispatch(setUser(res.data.user));
+        }
+        console.log(res.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    if (!user) {
+      fetchUserData();
+    }
+  }, []); 
+
+
   const logoutHandler = async () => {
     try {
-      const res = await axios.post(`${USER_API_ENDPOINT}/logout`, {
-        withCredentials: true,
-      });
-      if (res && res.data && res.data.success) {
+      const res = await axios.post(
+        `${USER_API_ENDPOINT}/logout`,
+        {}, 
+        { withCredentials: true } 
+      );
+      if (res.data.success) {
         dispatch(setUser(null));
-        closeSidebar()
+        closeSidebar();
         navigate("/");
         toast.success(res.data.message);
       } else {
@@ -44,6 +67,7 @@ const Navbar = () => {
       toast.error("Error logging out. Please try again.");
     }
   };
+
   return (
     <div className="bg-white mx-3">
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16">
@@ -55,8 +79,8 @@ const Navbar = () => {
         <button
           className="font-bold sm:hidden visible"
           onClick={() => setSidebarOpen(true)}
-        > 
-          <GiHamburgerMenu size={26}/>
+        >
+          <GiHamburgerMenu size={26} />
         </button>
         <div
           className={`${
@@ -76,7 +100,7 @@ const Navbar = () => {
             }`}
             onClick={closeSidebar}
           >
-            <IoIosClose size={26}/>
+            <IoIosClose size={26} />
           </button>
           <ul className="sm:flex font-medium items-center gap-6 sm:space-y-0 space-y-2">
             {user && user.role === "Recruiter" ? (
@@ -99,7 +123,7 @@ const Navbar = () => {
                     Home
                   </Link>
                 </li>
-               
+
                 <li>
                   <Link to={"/jobs"} onClick={closeSidebar}>
                     Jobs
@@ -129,7 +153,11 @@ const Navbar = () => {
               <PopoverTrigger asChild>
                 <Avatar className="cursor-pointer">
                   <AvatarImage
-                    src={user.profile.profilePhoto ? user.profile.profilePhoto : defaultProfileImage}
+                    src={
+                      user.profile.profilePhoto
+                        ? user.profile.profilePhoto
+                        : defaultProfileImage
+                    }
                     alt="@shadcn"
                   />
                 </Avatar>
@@ -138,7 +166,11 @@ const Navbar = () => {
                 <div className="flex gap-4 space-y-2">
                   <Avatar className="cursor-pointer">
                     <AvatarImage
-                      src={user.profile.profilePhoto ? user.profile.profilePhoto : defaultProfileImage}
+                      src={
+                        user.profile.profilePhoto
+                          ? user.profile.profilePhoto
+                          : defaultProfileImage
+                      }
                       alt="@shadcn"
                     />
                   </Avatar>
@@ -151,12 +183,15 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex flex-col my-2 text-gray-600  ">
-                   <div className="flex w-fit items-center gap-2 cursor-pointer">
-                      <User2></User2>
-                      <Button variant="link">
-                        <Link to={"/profile"} onClick={closeSidebar}> Profile</Link>{" "}
-                      </Button>
-                    </div>
+                  <div className="flex w-fit items-center gap-2 cursor-pointer">
+                    <User2></User2>
+                    <Button variant="link">
+                      <Link to={"/profile"} onClick={closeSidebar}>
+                        {" "}
+                        Profile
+                      </Link>{" "}
+                    </Button>
+                  </div>
 
                   <div className="flex w-fit items-center gap-2 cursor-pointer">
                     <LogOut></LogOut>

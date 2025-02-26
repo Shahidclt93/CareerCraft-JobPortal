@@ -9,7 +9,7 @@ export const register = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, password, adharcard, role } = req.body;
 
-    if (!fullname || !email || !phoneNumber || !password || !role || !adharcard) {
+    if (!fullname || !email || !phoneNumber || !password || !role) {
       return res.status(400).json({
         message: "Missing required fields",
         success: false,
@@ -93,7 +93,7 @@ export const login = async (req, res) => {
       });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({
         message: "Incorrect email or password",
@@ -136,7 +136,7 @@ export const login = async (req, res) => {
       .json({
         message: `Welcome back ${user.fullname}`,
         user: sanitizedUser,
-      token:token,
+      
 
         success: true,
       });
@@ -149,16 +149,32 @@ export const login = async (req, res) => {
   }
 };
 
+export const profile = async (req, res)=>{
+  try {
+    const user = await User.findById(req.user.user._id).select("-password")
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    res.status(200).json({ success: true, user});
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+
 // Logout
 export const logout = async (req, res) => {
   try {
-    return res.status(200).cookie("token", "", { maxAge: 0 }).json({
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    return res.status(200).json({
       message: "Logged out successfully",
       success: true,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Server Error logging out",
       success: false,
     });

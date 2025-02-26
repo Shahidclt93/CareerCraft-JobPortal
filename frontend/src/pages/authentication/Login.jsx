@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import { USER_API_ENDPOINT } from "../../utils/data";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser } from "../../redux/authSlice";
+import GoogleAuth from "../../components/userComponents/GoogleAuth";
+
 
 const Login = () => {
   const [input, setInput] = useState({
@@ -23,9 +25,7 @@ const Login = () => {
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
-  const ChangeFilehandler = (e) => {
-    setInput({ ...input, file: e.target.files?.[0] });
-  };
+ 
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -58,11 +58,14 @@ const Login = () => {
 
   return (
     <div>
-      <Navbar></Navbar>
+      <Navbar/>
       <div className="flex items-center justify-center max-w-7xl mx-auto">
+        <div className="lg:w-2/5 sm:w-1/2 w-full border shadow-lg rounded-md p-4 my-10 mx-4">
+
+        
         <form
           onSubmit={submitHandler}
-          className="lg:w-2/5 sm:w-1/2 w-full border shadow-lg rounded-md p-4 my-10 mx-4"
+          className="w-full"
         >
           <h1 className="font-bold text-xl mb-5 text-center text-blue-600">
             Login
@@ -119,22 +122,25 @@ const Login = () => {
           
            <button
               type="submit"
-              className="w-full py-2 my-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-blue-600 hover:bg-blue-800/90 rounded-md"
+              className="w-full py-2 my-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-blue-600 hover:bg-blue-800 rounded-md"
             >
               Login
             </button>
 
           <div className=" ">
-            <p className="text-gray-700 text-center my-2">
+            <p className="text-sm text-gray-700 text-center my-2">
               Create new Account{" "}
               <Link to="/register" className="text-blue-700">
-                <button className="w-full py-2 my-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-green-600 hover:bg-green-800/90 rounded-md">
+                <button className="w-full py-2 my-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-green-600 hover:bg-green-800 rounded-md">
                   Register
                 </button>
               </Link>
             </p>
           </div>
         </form>
+        <GoogleAuth/>
+        </div>
+
       </div>
     </div>
   );
