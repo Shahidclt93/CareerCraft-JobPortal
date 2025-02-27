@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "../../components/ui/select";
 import axios from "axios";
-import { JOB_API_ENDPOINT } from "../../utils/data";
+import { JOB_API_ENDPOINT } from "../../utils/apisEndPoints";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";

@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import axios from "axios";
 import { setUser } from "../../redux/authSlice";
-import { USER_API_ENDPOINT } from "../../utils/data";
+import { USER_API_ENDPOINT } from "../../utils/apisEndPoints";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoIosClose } from "react-icons/io";
 import defaultProfileImage from "../../assets/Profile.png";

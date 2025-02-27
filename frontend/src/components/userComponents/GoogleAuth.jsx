@@ -1,5 +1,5 @@
 import React from "react";
-import { USER_API_ENDPOINT } from "../../utils/data";
+import { USER_API_ENDPOINT } from "../../utils/apisEndPoints";
 import { FcGoogle } from "react-icons/fc";
 
 const GoogleAuth = () => {

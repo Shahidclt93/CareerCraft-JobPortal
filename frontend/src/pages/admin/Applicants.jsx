@@ -4,7 +4,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setAllApplicants } from "../../redux/applicationSlice";
-import { APPLICATION_API_ENDPOINT } from "../../utils/data";
+import { APPLICATION_API_ENDPOINT } from "../../utils/apisEndPoints";
 import Navbar from "../../components/userComponents/Navbar";
 
 const Applicants = () => {

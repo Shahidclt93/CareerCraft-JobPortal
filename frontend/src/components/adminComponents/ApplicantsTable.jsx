@@ -19,7 +19,7 @@ import { MoreHorizontal } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "sonner";
 import axios from "axios";
-import { APPLICATION_API_ENDPOINT } from "../../utils/data";
+import { APPLICATION_API_ENDPOINT } from "../../utils/apisEndPoints";
 import { setAllApplicants } from "../../redux/applicationSlice"; 
 
 

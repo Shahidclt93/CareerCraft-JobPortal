@@ -5,7 +5,7 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { Label } from "../../components/ui/label.jsx";
 import { Input } from "../../components/ui/input.jsx";
 import axios from "axios";
-import { COMPANY_API_ENDPOINT } from "../../utils/data.js";
+import { COMPANY_API_ENDPOINT } from "../../utils/apisEndPoints.js";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";

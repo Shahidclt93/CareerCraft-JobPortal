@@ -23,7 +23,7 @@ import { Trash, Eye, MoreHorizontal } from "lucide-react";
 
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { JOB_API_ENDPOINT } from "../../utils/data";
+import { JOB_API_ENDPOINT } from "../../utils/apisEndPoints";
 import axios from "axios";
 
 const AdminJobsTable = () => {

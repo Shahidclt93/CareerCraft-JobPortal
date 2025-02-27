@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import { useParams, useNavigate } from "react-router-dom";
-import { JOB_API_ENDPOINT, APPLICATION_API_ENDPOINT } from "../utils/data";
+import { JOB_API_ENDPOINT, APPLICATION_API_ENDPOINT } from "../utils/apisEndPoints";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setSingleJob } from "../redux/jobSlice";

@@ -7,7 +7,7 @@ import { RadioGroup } from "../../components/ui/radio-group";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "sonner";
-import { USER_API_ENDPOINT } from "../../utils/data";
+import { USER_API_ENDPOINT } from "../../utils/apisEndPoints";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading, setUser } from "../../redux/authSlice";
 import GoogleAuth from "../../components/userComponents/GoogleAuth";

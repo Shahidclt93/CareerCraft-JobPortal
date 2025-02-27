@@ -4,7 +4,7 @@ import FilterMenu from "../components/userComponents/FilterMenu";
 import JobCard2 from "../components/userComponents/JobCard2";
 import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
-import { JOB_API_ENDPOINT } from "../utils/data";
+import { JOB_API_ENDPOINT } from "../utils/apisEndPoints";
 import axios from "axios";
 import { Button } from "../components/ui/button";
 import { Search } from "lucide-react";
