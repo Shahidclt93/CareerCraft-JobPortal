@@ -101,7 +101,7 @@ export const getAllJobs = async (req, res) => {
       filter.experience = { $lte: parseInt(maxExperience) };
     }
     // Fetch jobs from the database based on the filter
-    const jobs = await Job.find(filter);
+    const jobs = await Job.find(filter).populate("company", "name logo");
     return res.status(200).json({ jobs, success: true });
   } catch (error) {
     console.error(error);
