@@ -34,7 +34,7 @@ router.get(
       secure: true,
     });
 
-    res.redirect(`https://careercraft-frontend.onrender.com/${token}`);
+    res.redirect(`https://careercraft-frontend.onrender.com`);
   }
 );
 
