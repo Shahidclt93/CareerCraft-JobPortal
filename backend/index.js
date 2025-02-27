@@ -12,7 +12,7 @@ import session from "express-session";
 import passport from "./utils/passport.js";
 import MongoStore from "connect-mongo";
 
-job.start();
+// job.start();
 dotenv.config({});
 const app = express();
 
