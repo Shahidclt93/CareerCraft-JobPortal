@@ -16,6 +16,8 @@ import MongoStore from "connect-mongo";
 dotenv.config({});
 const app = express();
 
+app.set("trust proxy", 1);
+
 //middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -53,7 +55,12 @@ app.use("/api/company", companyRoute);
 app.use("/api/job", jobRoute);
 app.use("/api/application", applicationRoute);
 
-app.listen(PORT, () => {
-  connectDB();
-  console.log(`Server is running on port ${PORT}`);
-});
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Failed to connect to the database:", error);
+  });
