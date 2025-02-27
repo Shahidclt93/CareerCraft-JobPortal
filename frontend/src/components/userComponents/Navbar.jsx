@@ -26,7 +26,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/auth/me", {
+        const res = await axios.get(`${USER_API_ENDPOINT}/me`, {
           withCredentials: true,
         });
         if (res.data.success) {
@@ -41,15 +41,14 @@ const Navbar = () => {
     if (!user) {
       fetchUserData();
     }
-  }, []); 
-
+  }, []);
 
   const logoutHandler = async () => {
     try {
       const res = await axios.post(
         `${USER_API_ENDPOINT}/logout`,
-        {}, 
-        { withCredentials: true } 
+        {},
+        { withCredentials: true }
       );
       if (res.data.success) {
         dispatch(setUser(null));
