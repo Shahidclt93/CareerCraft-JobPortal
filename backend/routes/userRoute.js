@@ -29,9 +29,10 @@ router.get(
 
     res.cookie("token", token, {
       maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: false,
+      httpOnly: true,
       sameSite: "none",
       secure: true,
+      domain: '.onrender.com'
     });
 
     res.redirect(`https://careercraft-frontend.onrender.com`);
