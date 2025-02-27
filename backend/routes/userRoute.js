@@ -31,8 +31,7 @@ router.get(
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
       sameSite: "none",
-      secure: true,
-      domain: '.onrender.com'
+      secure: false
     });
 
     res.redirect(`https://careercraft-frontend.onrender.com`);
