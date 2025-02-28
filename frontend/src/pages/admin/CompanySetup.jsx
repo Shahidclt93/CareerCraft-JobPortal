@@ -14,6 +14,9 @@ import useGetCompanyById from "../../hooks/useGetCompanyById.jsx";
 const CompanySetup = () => {
   const params = useParams();
   useGetCompanyById(params.id);
+  const { token } = useSelector((store) => store.auth);
+  const { singleCompany } = useSelector((store) => store.company);
+
   const [input, setInput] = useState({
     name: "",
     description: "",
@@ -21,7 +24,6 @@ const CompanySetup = () => {
     location: "",
     file: null,
   });
-  const { singleCompany } = useSelector((store) => store.company);
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -52,12 +54,13 @@ const CompanySetup = () => {
         formData,
         {
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
           withCredentials: true,
         }
       );
-     
+
       if (res.status === 200 && res.data.message) {
         toast.success(res.data.message);
         navigate("/admin/companies");

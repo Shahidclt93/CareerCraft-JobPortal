@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Avatar, AvatarImage } from "../ui/avatar";
@@ -6,9 +6,7 @@ import { Button } from "../ui/button";
 import { LogOut, User2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import axios from "axios";
-import { setUser } from "../../redux/authSlice";
-import { USER_API_ENDPOINT } from "../../utils/apisEndPoints";
+import { setUser, setToken } from "../../redux/authSlice";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoIosClose } from "react-icons/io";
 import defaultProfileImage from "../../assets/Profile.png";
@@ -23,50 +21,13 @@ const Navbar = () => {
     setSidebarOpen(false);
   };
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const res = await axios.get(`${USER_API_ENDPOINT}/me`, {
-          withCredentials: true,
-        });
-        if (res.data.success) {
-          dispatch(setUser(res.data.user));
-        }
-        console.log(res.data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    if (!user) {
-      fetchUserData();
-    }
-  }, []);
-
-  const logoutHandler = async () => {
-    try {
-      const res = await axios.post(
-        `${USER_API_ENDPOINT}/logout`,
-        {},
-        { withCredentials: true }
-      );
-      if (res.data.success) {
-        dispatch(setUser(null));
-        closeSidebar();
-        navigate("/");
-        toast.success(res.data.message);
-      } else {
-        console.error("Error logging out:", res.data);
-      }
-    } catch (error) {
-      console.error("Axios error:", error);
-      if (error.response) {
-        console.error("Error response:", error.response.data);
-      }
-      toast.error("Error logging out. Please try again.");
-    }
+  const logoutHandler = () => {
+    dispatch(setUser(null));
+    dispatch(setToken(null));
+    closeSidebar();
+    navigate("/");
+    toast.success("Logged Out");
   };
-
   return (
     <div className="bg-white mx-3">
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16">

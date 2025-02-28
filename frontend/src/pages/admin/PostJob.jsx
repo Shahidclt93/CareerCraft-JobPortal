@@ -18,8 +18,10 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
-
 const PostJob = () => {
+  const { companies } = useSelector((store) => store.company);
+  const { token } = useSelector((store) => store.auth);
+
   const [input, setInput] = useState({
     title: "",
     description: "",
@@ -32,7 +34,6 @@ const PostJob = () => {
     companyId: "",
   });
   const navigate = useNavigate();
-  const { companies } = useSelector((store) => store.company);
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
@@ -51,6 +52,7 @@ const PostJob = () => {
       setLoading(true);
       const res = await axios.post(`${JOB_API_ENDPOINT}/post`, input, {
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         withCredentials: true,
@@ -68,7 +70,6 @@ const PostJob = () => {
       } else {
         toast.error("An unexpected error occurred");
       }
-      
     } finally {
       setLoading(false);
     }

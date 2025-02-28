@@ -50,7 +50,7 @@ const appRouter = createBrowserRouter([
     path: "/home",
     element: <Home />,
   },
- 
+
   // /admin
   {
     path: "/admin/companies",

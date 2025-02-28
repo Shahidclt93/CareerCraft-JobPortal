@@ -2,25 +2,28 @@ import React, { useEffect, useState } from "react";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import { useParams, useNavigate } from "react-router-dom";
-import { JOB_API_ENDPOINT, APPLICATION_API_ENDPOINT } from "../utils/apisEndPoints";
+import {
+  JOB_API_ENDPOINT,
+  APPLICATION_API_ENDPOINT,
+} from "../utils/apisEndPoints";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setSingleJob } from "../redux/jobSlice";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 
-
-
 const JobDetails = () => {
   const params = useParams();
   const jobId = params.id;
   const navigate = useNavigate();
-  const { singleJob } = useSelector((store) => store.job);
   const dispatch = useDispatch();
+  const { singleJob } = useSelector((store) => store.job);
+  const { user, token } = useSelector((store) => store.auth);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { user } = useSelector((store) => store.auth);
 
+  console.log(token)
   const isIntiallyApplied =
     singleJob?.application?.some(
       (application) => application.applicant === user?._id
@@ -28,15 +31,18 @@ const JobDetails = () => {
   const [isApplied, setIsApplied] = useState(isIntiallyApplied);
 
   const applyJobHandler = async () => {
-    if(!user){
-      toast.error("You need to sign in to apply for jobs.")
+    if (!user) {
+      toast.error("You need to sign in to apply for jobs.");
       return;
     }
     try {
       const res = await axios.post(
-        `${APPLICATION_API_ENDPOINT}/apply/${jobId}`,
-        {},
-        { withCredentials: true }
+        `${APPLICATION_API_ENDPOINT}/apply/${jobId}`,{},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (res.data.success) {
         setIsApplied(true);
@@ -136,7 +142,7 @@ const JobDetails = () => {
           <h1 className="font-bold my-1 ">
             Positions
             <span className=" pl-4 font-normal text-gray-800">
-              {singleJob?.position} 
+              {singleJob?.position}
             </span>
           </h1>
           <h1 className="font-bold my-1 ">

@@ -3,11 +3,13 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloud.js";
+import { oauth2Client } from "../utils/googleClient.js";
 
 // User register
 export const register = async (req, res) => {
   try {
-    const { fullname, email, phoneNumber, password, adharcard, role } = req.body;
+    const { fullname, email, phoneNumber, password, adharcard, role } =
+      req.body;
 
     if (!fullname || !email || !phoneNumber || !password || !role) {
       return res.status(400).json({
@@ -31,7 +33,6 @@ export const register = async (req, res) => {
         success: false,
       });
     }
-
 
     const file = req.file;
     if (!file) {
@@ -125,21 +126,12 @@ export const login = async (req, res) => {
       profile: user.profile,
     };
 
-    return res
-      .status(200)
-      .cookie("token", token, {
-        maxAge: 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        sameSite: "none",
-        secure: true,
-      })
-      .json({
-        message: `Welcome back ${user.fullname}`,
-        user: sanitizedUser,
-      
-
-        success: true,
-      });
+    return res.status(200).json({
+      message: "Login Successful",
+      user: sanitizedUser,
+      token,
+      success: true,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -149,35 +141,66 @@ export const login = async (req, res) => {
   }
 };
 
-export const profile = async (req, res)=>{
+/* GET Google Authentication API */
+export const googleAuth = async (req, res, next) => {
+  const code = req.query.code;
   try {
-    const user = await User.findById(req.user.user._id).select("-password")
-    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    const googleRes = await oauth2Client.getToken(code);
+    oauth2Client.setCredentials(googleRes.tokens);
 
-    res.status(200).json({ success: true, user});
+    const userResponse = await fetch(
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
+    );
+
+    if (!userResponse.ok) {
+      throw new Error(`Google API Error: ${userResponse.statusText}`);
+    }
+
+    const userData = await userResponse.json();
+    const { email, name, picture } = userData;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        googleId: googleRes.tokens.id_token,
+        fullname: name,
+        email: email,
+        profile: {
+          profilePhoto: picture,
+        },
+      });
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    res.status(200).json({
+      message: "success",
+      token,
+      user,
+    });
+  } catch (err) {
+    console.error("Google Auth Error:", err);
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
+// Profile
+export const profile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.user._id).select("-password");
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+
+    res.status(200).json({ success: true, user });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });
-  }
-}
-
-// Logout
-export const logout = async (req, res) => {
-  try {
-    res.clearCookie("token", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    });
-    return res.status(200).json({
-      message: "Logged out successfully",
-      success: true,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      message: "Server Error logging out",
-      success: false,
-    });
   }
 };
 
@@ -187,9 +210,8 @@ export const updateProfile = async (req, res) => {
     const { fullname, email, phoneNumber, bio, skills } = req.body;
     const file = req.file;
 
-    const userId = req.id; 
+    const userId = req.id;
     const user = await User.findById(userId);
-
     if (!user) {
       return res.status(404).json({
         message: "User not found",

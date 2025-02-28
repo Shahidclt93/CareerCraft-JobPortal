@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../redux/authSlice";
 
 const Register = () => {
+  const { loading, token } = useSelector((store) => store.auth);
+
   const [input, setInput] = useState({
     fullname: "",
     email: "",
@@ -26,7 +28,6 @@ const Register = () => {
 
   const dispatch = useDispatch();
 
-  const { loading } = useSelector((store) => store.auth);
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
@@ -50,8 +51,10 @@ const Register = () => {
     try {
       dispatch(setLoading(true));
       const res = await axios.post(`${USER_API_ENDPOINT}/register`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
       });
       if (res.data.success) {
         navigate("/login");

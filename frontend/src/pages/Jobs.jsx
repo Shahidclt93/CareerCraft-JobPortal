@@ -7,33 +7,32 @@ import { motion } from "framer-motion";
 import { JOB_API_ENDPOINT } from "../utils/apisEndPoints";
 import axios from "axios";
 import { Button } from "../components/ui/button";
+import useGetAllJobs from "../hooks/useGetAllJobs";
 import { Search } from "lucide-react";
 import { setSearchedQuery } from "../redux/jobSlice";
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
 
 const Jobs = () => {
   const dispatch = useDispatch();
+  const { loading, error } = useGetAllJobs();
 
   const { allJobs, searchedQuery } = useSelector((store) => store.job);
+  const { token } = useSelector((store) => store.auth);
+
   const [filterJobs, setFilterJobs] = useState([]);
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState(null);
 
-
   useEffect(() => {
-
     const fetchSearchedJobs = async () => {
       try {
-        const res = await axios.get(
-          `${JOB_API_ENDPOINT}/get/`,
-
-          {
-           params:{...filters, searchedKeyword:searchedQuery},
-            withCredentials: true,
-          }
-        );
-        console.log(res)
+        const res = await axios.get(`${JOB_API_ENDPOINT}/get/`, {
+          params: { ...filters, searchedKeyword: searchedQuery },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setFilterJobs(res.data.jobs);
       } catch (error) {
         console.error(error);
@@ -87,7 +86,11 @@ const Jobs = () => {
               />
             </div>
 
-            {filterJobs?.length <= 0 ? (
+            {loading ? (
+              <div className="w-full flex justify-center mt-8">
+                <span className="text-gray-500">Loading...</span>
+              </div>
+            ) : filterJobs?.length <= 0 ? (
               <div className="w-full flex justify-center mt-8">
                 <span className="text-gray-500">Job not found</span>
               </div>

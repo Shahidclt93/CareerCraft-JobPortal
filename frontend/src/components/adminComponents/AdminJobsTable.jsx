@@ -27,9 +27,9 @@ import { JOB_API_ENDPOINT } from "../../utils/apisEndPoints";
 import axios from "axios";
 
 const AdminJobsTable = () => {
-
   const { companies } = useSelector((store) => store.company);
   const { allAdminJobs, searchJobByText } = useSelector((store) => store.job);
+  const { token } = useSelector((store) => store.auth);
   const navigate = useNavigate();
 
   const [filterJobs, setFilterJobs] = useState([]);
@@ -57,12 +57,15 @@ const AdminJobsTable = () => {
 
   const deleteJob = async (jobId) => {
     try {
-      axios.defaults.withCredentials = true;
-      const res = await axios.delete(`${JOB_API_ENDPOINT}/delete/${jobId}`);
+      const res = await axios.delete(`${JOB_API_ENDPOINT}/delete/${jobId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (res.data.success) {
         toast.success(res.data.message);
       }
-      console.log(res.data)
+      console.log(res.data);
 
       setFilterJobs(filterJobs.filter((job) => job._id !== jobId));
     } catch (error) {

@@ -5,7 +5,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogDescription
+  DialogDescription,
 } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
@@ -18,10 +18,10 @@ import { Loader2 } from "lucide-react";
 
 const EditProfileModal = ({ open, setOpen }) => {
   const [loading, setLoading] = useState(false);
-  const { user } = useSelector((store) => store.auth);
+  const { user, token } = useSelector((store) => store.auth);
 
   const [input, setInput] = useState({
-    fullname: user?.fullname, 
+    fullname: user?.fullname,
     email: user?.email,
     phoneNumber: user?.phoneNumber,
     bio: user?.profile?.bio,
@@ -55,8 +55,8 @@ const EditProfileModal = ({ open, setOpen }) => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
           },
-          withCredentials: true,
         }
       );
       if (res.data.success) {
@@ -70,7 +70,6 @@ const EditProfileModal = ({ open, setOpen }) => {
       setLoading(false);
     }
     setOpen(false);
-
   };
 
   const FileChangehandler = (e) => {
@@ -125,8 +124,8 @@ const EditProfileModal = ({ open, setOpen }) => {
                 <input
                   type="tel"
                   id="phone"
-                  value={input.phoneNumber} 
-                  name="phoneNumber" 
+                  value={input.phoneNumber}
+                  name="phoneNumber"
                   onChange={changeEventHandler}
                   className="col-span-3 border border-gray-300 rounded-md p-2"
                 />

@@ -11,13 +11,17 @@ const Applicants = () => {
   const params = useParams();
   const dispatch = useDispatch();
   const { applicants } = useSelector((store) => store.application);
+  const { token } = useSelector((store) => store.auth);
 
   useEffect(() => {
     const fetchAllApplicants = async () => {
       try {
         const res = await axios.get(
-          `${APPLICATION_API_ENDPOINT}/${params.id}/applicants`,
-          { withCredentials: true }
+          `${APPLICATION_API_ENDPOINT}/${params.id}/applicants`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         dispatch(setAllApplicants(res.data.job));
         console.log(res.data);
