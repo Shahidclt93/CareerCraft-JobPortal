@@ -1,67 +1,54 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Navbar from "../components/userComponents/Navbar";
 import FilterMenu from "../components/userComponents/FilterMenu";
 import JobCard2 from "../components/userComponents/JobCard2";
 import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
-import { JOB_API_ENDPOINT } from "../utils/apisEndPoints";
-import axios from "axios";
 import { Button } from "../components/ui/button";
 import useGetAllJobs from "../hooks/useGetAllJobs";
 import { Search } from "lucide-react";
 import { setSearchedQuery } from "../redux/jobSlice";
 import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
+import { IoIosClose } from "react-icons/io";
+
 
 const Jobs = () => {
   const dispatch = useDispatch();
-  const { loading, error } = useGetAllJobs();
-
   const { allJobs, searchedQuery } = useSelector((store) => store.job);
-  const { token } = useSelector((store) => store.auth);
 
-  const [filterJobs, setFilterJobs] = useState([]);
   const [openFilterMenu, setOpenFilterMenu] = useState(false);
   const [query, setQuery] = useState("");
-  const [filters, setFilters] = useState(null);
 
-  useEffect(() => {
-    const fetchSearchedJobs = async () => {
-      try {
-        const res = await axios.get(`${JOB_API_ENDPOINT}/get/`, {
-          params: { ...filters, searchedKeyword: searchedQuery },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setFilterJobs(res.data.jobs);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchSearchedJobs();
-  }, [allJobs, searchedQuery, filters]);
+  const { loading } = useGetAllJobs();
 
-  const searchjobHandler = () => {
+  const searchJobHandler = () => {
     dispatch(setSearchedQuery(query));
   };
-  const handleFilterChange = (newFilters) => {
-    setFilters(newFilters);
-  };
+
   return (
     <div>
       <Navbar />
       <div className="px-3">
         <div className="flex justify-center w-full">
-          <div className="flex md:w-1/2 w-full shadow-lg border border-gray-300 pl-5 h-12 overflow-hidden rounded-full items-center">
+          <div className="flex items-center md:w-1/2 w-full shadow-lg border border-gray-300 pl-5 h-12 overflow-hidden rounded-full gap-4 mx-auto relative">
             <input
               type="text"
+              value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Find Your Dream Job"
-              className="outline-none border-none w-full h-full"
+              className="outline-none border-none w-full"
             />
+            {query && (
+              <button
+                onClick={() => setQuery("")}
+                className="absolute right-14 text-gray-500 hover:text-black"
+              >
+                <IoIosClose size={24} />
+              </button>
+            )}
             <Button
-              onClick={searchjobHandler}
-              className=" rounded-r-full h-full px-5"
+              onClick={searchJobHandler}
+              className="rounded-r-full h-full px-5"
             >
               <Search className="h-5 w-5" />
             </Button>
@@ -79,25 +66,29 @@ const Jobs = () => {
                 !openFilterMenu && "md:block hidden"
               }`}
             >
-              <FilterMenu
-                setOpenFilterMenu={setOpenFilterMenu}
-                onFilterChange={handleFilterChange}
-                s
-              />
+              <FilterMenu setOpenFilterMenu={setOpenFilterMenu} />
             </div>
 
             {loading ? (
               <div className="w-full flex justify-center mt-8">
                 <span className="text-gray-500">Loading...</span>
               </div>
-            ) : filterJobs?.length <= 0 ? (
+            ) : allJobs?.length <= 0 ? (
               <div className="w-full flex justify-center mt-8">
                 <span className="text-gray-500">Job not found</span>
               </div>
             ) : (
               <div className="flex-1 mb-5">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {filterJobs?.map((job) => (
+                {searchedQuery && (
+                  <p>
+                    <span className="text-gray-600 text-sm">
+                      Search results for:
+                    </span>{" "}
+                    {searchedQuery}
+                  </p>
+                )}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 overflow-x-hidden">
+                  {allJobs?.map((job) => (
                     <motion.div
                       initial={{ opacity: 0, x: 100 }}
                       animate={{ opacity: 1, x: 0 }}

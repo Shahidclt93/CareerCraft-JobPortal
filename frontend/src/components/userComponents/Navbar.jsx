@@ -50,7 +50,7 @@ const Navbar = () => {
         ></div>
 
         <div
-          className={`flex sm:flex-row flex-col items-center justify-between sm:static fixed right-0 top-0 bg-white sm:bg-transparent h-screen sm:h-auto z-50 shadow-lg sm:shadow-none w-2/3 sm:w-auto text-center py-10 gap-10  ${
+          className={`flex sm:flex-row flex-col items-center justify-between sm:static fixed right-0 top-0 bg-white sm:bg-transparent h-screen sm:h-auto z-50 shadow-lg sm:shadow-none w-2/3 sm:w-auto text-center sm:py-0 py-10 gap-10  ${
             !sidebarOpen && "sm:translate-x-0 translate-x-full"
           } transition-transform `}
         >
@@ -147,9 +147,8 @@ const Navbar = () => {
                     <User2></User2>
                     <Button variant="link">
                       <Link to={"/profile"} onClick={closeSidebar}>
-                        {" "}
                         Profile
-                      </Link>{" "}
+                      </Link>
                     </Button>
                   </div>
 

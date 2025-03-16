@@ -5,6 +5,7 @@ import { PiBuildingOfficeBold } from "react-icons/pi";
 import { useDispatch } from "react-redux";
 import { setSearchedQuery } from "../../redux/jobSlice";
 import { useNavigate } from "react-router-dom";
+import { IoIosClose } from "react-icons/io";
 
 const Hero = () => {
   const [query, setQuery] = useState("");
@@ -32,20 +33,29 @@ const Hero = () => {
             Achieve Your <span className="text-[#00A36C]">Job Today</span>
           </h2>
           <p>
-            Begin Your Search for Life-Changing Career Opportunities in Your{" "}
+            Begin Your Search for Life-Changing Career Opportunities in Your
             <br />
             Chosen Field and Get Hired Fast
           </p>
-          <div className="flex md:w-1/2  w-full shadow-lg border border-gray-300 pl-5 h-12 overflow-hidden rounded-full items-center gap-4 mx-auto ">
+          <div className="flex items-center md:w-1/2 w-full shadow-lg border border-gray-300 pl-5 h-12 overflow-hidden rounded-full gap-4 mx-auto relative">
             <input
               type="text"
+              value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Find Your Dream Job"
-              className="outline-none border-none w-full h-full"
+              className="outline-none border-none w-full"
             />
+            {query && (
+              <button
+                onClick={() => setQuery("")}
+                className="absolute right-14 text-gray-500 hover:text-black"
+              >
+                <IoIosClose size={24} />
+              </button>
+            )}
             <Button
               onClick={searchjobHandler}
-              className=" rounded-r-full h-full px-5"
+              className="rounded-r-full h-full px-5"
             >
               <Search className="h-5 w-5" />
             </Button>
